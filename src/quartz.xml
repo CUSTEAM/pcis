@@ -48,6 +48,12 @@
 	        <job-class>quartz.sys.ReportJobs</job-class>
 	    </job>
 	    
+	    <job>
+	        <!-- 資料庫備份 -->
+	        <name>BackupDBJobs</name>
+	        <job-class>quartz.BackupDB</job-class>
+	    </job>
+	    
 	    <!-- 資料庫連線測試 -->
 	    <!-- job>
 	        <name>TestDBJobs</name>
@@ -107,6 +113,17 @@
 	            <cron-expression>0 30 6 ? * FRI</cron-expression>
 	        </cron>
 	    </trigger>
+	    
+	    
+	    <trigger>
+	        <cron>
+	            <name>BackupDB</name>	            
+	            <job-name>BackupDBJobs</job-name>	            
+	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
+	            <cron-expression>0 30 5 * * ?</cron-expression>
+	        </cron>
+	    </trigger>
+	    
 	    
 	    <!--trigger>
 	        <cron>

@@ -31,8 +31,7 @@ import service.impl.base.BaseAccessImpl;
 import service.impl.base.BaseIOImpl;
 
 /**
- * 排程工作報告
- * 
+ * 資料庫狀態測試
  * @author John
  *
  */

@@ -45,7 +45,7 @@ public class BackupDB implements Job{
 		ApplicationContext springContext=new ClassPathXmlApplicationContext("classpath:../applicationContext.xml");		
 		BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");	
 				
-		String base = "/home/backup/";//本機暫存絕對路徑
+		String base = "/var/backup/";//本機暫存絕對路徑
 		//String base = "backup/";//本機暫存路徑
 		//Dao dao = new Dao();//資料連接池
 		GenFile c = new GenFile();//文件連接池
@@ -61,11 +61,10 @@ public class BackupDB implements Job{
 		List<Map<String,String>>complex=df.sqlGet("SELECT table_name FROM SYS_BACKUP_TABLE WHERE type='mixed'");
 		Calendar cal=Calendar.getInstance();
 		//2月1日與7月1日完整備份
-		/*if((cal.get(Calendar.MONTH)==8 && cal.get(Calendar.DAY_OF_MONTH)==13)|| (cal.get(Calendar.MONTH)==1 && cal.get(Calendar.DAY_OF_MONTH)==1) ){
+		if((cal.get(Calendar.MONTH)==8 && cal.get(Calendar.DAY_OF_MONTH)==14)|| (cal.get(Calendar.MONTH)==1 && cal.get(Calendar.DAY_OF_MONTH)==1) ){
 			single=new ArrayList();
 			complex=new ArrayList();
 		}
-		*/
 		//遠端備份資料庫位置
 		//List<Map>dbs=dao.QueryForList("SELECT * FROM SYS_BACKUP_HOST WHERE type='DB'");
 		List<Map>dbs=df.sqlGet("SELECT * FROM SYS_HOST WHERE useid='DBbackup' AND protocol='SQLDUMP'");
@@ -136,7 +135,7 @@ public class BackupDB implements Job{
 					System.out.println(cmd);
 				}else{
 					//linux
-					lmd=new String[]{"/bin/bash","-c","/usr/bin/mysqldump -uroot -h"+dbr.get("host_runtime")+" -pspring CIS "+table+">"+path+table};
+					lmd=new String[]{"/bin/bash","-c","/usr/bin/mysqldump --default-character-set=utf8 -uroot -h"+dbr.get("host_runtime")+" -pspring CIS "+table+">"+path+table};
 					Runtime.getRuntime().exec(lmd);  
 				}
 				//System.out.println(""+cmd);
@@ -149,7 +148,7 @@ public class BackupDB implements Job{
 						runexec("cmd /c"+cmd.replace("/", "\\"));//window系統下的轉換	
 					}else{
 						//linux
-						lmd=new String[]{"/bin/bash","-c","/usr/bin/mysqldump -uroot -h"+dbr.get("host_runtime")+" -pspring CIS "+ table + " > "+path+table};
+						lmd=new String[]{"/bin/bash","-c","/usr/mysql -uroot -h"+dbr.get("host_runtime")+" -pspring CIS "+ table + " > "+path+table};
 						Runtime.getRuntime().exec(lmd);
 					}
 				}				

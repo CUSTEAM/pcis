@@ -120,11 +120,10 @@
 	            <name>BackupDB</name>	            
 	            <job-name>BackupDBJobs</job-name>	            
 	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-	            <cron-expression>0 30 5 * * ?</cron-expression>
+	            <cron-expression>0 0 4 * * ?</cron-expression>
 	        </cron>
 	    </trigger>
-	    
-	    
+	    	    
 	    <!--trigger>
 	        <cron>
 	            <name>TestDBJobsTrigger</name>	            

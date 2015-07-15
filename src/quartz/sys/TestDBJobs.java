@@ -37,7 +37,7 @@ import service.impl.base.BaseIOImpl;
  */
 public class TestDBJobs implements Job {
 	
-	private String ip="192.168.3.160";
+	private String ip="...";
 	//private String port="3306";
 
 	public void execute(JobExecutionContext context)throws JobExecutionException {

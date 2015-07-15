@@ -37,11 +37,6 @@ public class SeldBackup {
 	
 	public void doit(){		
 		System.out.println("working...");
-		//主資料庫無需參照設定檔，要改的話整個程式連資料池都得改
-		//String host = "192.192.230.160";
-		//String db = "CIS";
-		//String pswd = "spring";
-		//String user = "root";
 		String base = "/home/tmp/SeldBackup/";//本機暫存絕對路徑
 		String baseWin="C:/home/SeldBackup/";
 		//String base = "backup/";//本機暫存路徑
@@ -106,8 +101,8 @@ public class SeldBackup {
 			
 			//dump作業 TODO 執行緒
 			/*
-			System.out.println("mysqldump --default-character-set=utf8 -uroot -h192.192.230.160 -pspring CIS Seld > "+base+file);
-			cmd=new String("mysqldump --default-character-set=utf8 -uroot -h192.192.230.160 -pspring CIS Seld > "+base+file);				
+			System.out.println("mysqldump --default-character-set=utf8 -uroot - - CIS Seld > "+base+file);
+			cmd=new String("mysqldump --default-character-set=utf8 -uroot - - CIS Seld > "+base+file);				
 			try{
 				runexec("cmd /c"+cmd.replace("/", "\\"));//window
 			}catch(Exception e){

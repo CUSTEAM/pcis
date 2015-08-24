@@ -22,9 +22,6 @@ public class TaskWeekly implements Job {
 		//嚴重缺曠導師通知
 		Abs2Alert aa=new Abs2Alert(springContext);
 		aa.doit();		
-		//Stavg重新排名
-		StavgRerank sr=new StavgRerank(springContext);
-		sr.doit();
 				
     }
 }

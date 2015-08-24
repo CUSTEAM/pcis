@@ -6,6 +6,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+
+import quartz.score.StavgRerank;
 //import quartz.score.StavgRerank;
 import quartz.sys.MaintainTable;
 import quartz.dilg.RollCallAlert;
@@ -24,6 +26,10 @@ public class TaskDaily implements Job {
 		
 		ApplicationContext springContext=new ClassPathXmlApplicationContext("classpath:../applicationContext.xml");		
 		
+		//Stavg計算並重新排名
+		StavgRerank sr=new StavgRerank(springContext);
+		sr.doit();
+		
 		//資料表維護
 		System.out.println("資料表維護");
 		MaintainTable mt=new MaintainTable(springContext);
@@ -33,7 +39,6 @@ public class TaskDaily implements Job {
 		System.out.println("未點名通知");
 		RollCallAlert rca=new RollCallAlert(springContext);
 		rca.doit();
-		
 		
 		//未核假通知
 		System.out.println("未核假通知");

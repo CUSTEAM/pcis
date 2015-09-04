@@ -143,7 +143,7 @@ public class MaintainTable {
 		}
 		
 		//Class維護
-		try{
+		/*try{
 			cnt=0;
 			list=df.sqlGet("SELECT ClassNo FROM Class WHERE Type='P'");
 			for(int i=0; i<list.size(); i++){
@@ -155,7 +155,7 @@ public class MaintainTable {
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('廢止班級維護','轉換"+cnt+"個班為廢止班級');");
 		}catch(Exception e){
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('廢止班級維護','失敗');");
-		}
+		}*/
 		
 		//BATCH_SELD_DILG_STAT 維護
 		try{								

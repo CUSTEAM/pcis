@@ -10,7 +10,7 @@ import service.impl.base.BaseMathImpl;
 import service.impl.StudAffairManager;
 
 /**
- * 重新計算近2學年中Stavg中的排名、平均成績
+ * 重新計算近4學年中Stavg中的排名、平均成績
  * @author John
  *
  */
@@ -24,17 +24,15 @@ public class StavgRerank {
 	public void doit(){		
 		BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");
 		BaseMathImpl bi = (BaseMathImpl) springContext.getBean("BaseMathImpl");
-		StudAffairManager sam = (StudAffairManager) springContext.getBean("StudAffairManager");
-		
-		int school_year=Integer.parseInt(sam.school_year());
-		
-		
-		for(int i=school_year-4; i<school_year; i++){			
-			for(int j=1; j<=2; j++){
-				df.exSql("INSERT INTO Stavg (student_no, score, school_year, school_term) "
-				+ "(SELECT student_no, AVG(score) as score, school_year, school_term FROM ScoreHist WHERE "
-				+ "credit>0 AND evgr_type!='6' AND school_year="+i+" AND school_term="+j+" GROUP BY student_no) "
-				+ "ON DUPLICATE KEY UPDATE score=score");
+		StudAffairManager sam = (StudAffairManager) springContext.getBean("StudAffairManager");		
+		int school_year=Integer.parseInt(sam.school_year());		
+		for(int i=school_year-4; i<=school_year; i++){	
+			df.exSql("DELETE FROM Stavg WHERE school_year="+i);
+			for(int j=1; j<=2; j++){				
+				df.exSql("INSERT INTO Stavg (student_no, score, total_credit, school_year, school_term) "
+				+ "(SELECT student_no, IFNULL(SUM(score*credit)/SUM(credit),0) as score, IFNULL(SUM(credit),0)as "
+				+ "total_credit, school_year, school_term FROM ScoreHist WHERE evgr_type NOT IN(5, 6)AND "
+				+ "(school_year="+i+" AND school_term="+j+") GROUP BY student_no)");
 			}			
 		}		
 		

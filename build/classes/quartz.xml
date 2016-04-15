@@ -120,7 +120,7 @@
 	            <name>BackupDB</name>	            
 	            <job-name>BackupDBJobs</job-name>	            
 	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-	            <cron-expression>0 55 8 * * ?</cron-expression>
+	            <cron-expression>0 0 0 * * ?</cron-expression>
 	        </cron>
 	    </trigger>
 	    	    

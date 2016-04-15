@@ -8,7 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 import quartz.score.StavgRerank;
-//import quartz.score.StavgRerank;
+import quartz.score.StavgRerank;
 import quartz.sys.MaintainTable;
 import quartz.dilg.RollCallAlert;
 import quartz.dilg.LeaveAlert;
@@ -27,8 +27,8 @@ public class TaskDaily implements Job {
 		ApplicationContext springContext=new ClassPathXmlApplicationContext("classpath:../applicationContext.xml");		
 		
 		//Stavg計算並重新排名
-		//StavgRerank sr=new StavgRerank(springContext);
-		//sr.doit();
+		StavgRerank sr=new StavgRerank(springContext);
+		sr.doit();
 		
 		//資料表維護
 		System.out.println("資料表維護");

@@ -117,9 +117,17 @@ public class MaintainTable {
 		sb=new StringBuilder(df.sqlGetStr("SELECT COUNT(*) FROM Dilg WHERE student_no NOT IN(SELECT student_no FROM Seld WHERE Dtime_oid=Dilg.Dtime_oid)"));
 		try{		
 			df.exSql("DELETE FROM Dilg WHERE student_no NOT IN(SELECT student_no FROM Seld WHERE Dtime_oid=Dilg.Dtime_oid)");
-			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選曠課記錄','已刪除"+sb+"筆');");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選缺課記錄','已刪除"+sb+"筆');");
 		}catch(Exception e){
-			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選曠課記錄','失敗');");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選缺課記錄','失敗');");
+		}
+		
+		try{
+			sb=new StringBuilder(df.sqlGetStr("SELECT COUNT(*) FROM Dilg  WHERE Dilg_app_oid NOT IN (SELECT Oid FROM Dilg_apply)"));
+			df.exSql("UPDATE Dilg  SET Dilg_app_oid=null WHERE Dilg_app_oid NOT IN (SELECT Oid FROM Dilg_apply)");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('無假單指標缺課記錄','已清除"+sb+"筆');");
+		}catch(Exception e){
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('清除無假單指標缺課記錄','失敗');");
 		}
 		
 		//Dilg_apply維護

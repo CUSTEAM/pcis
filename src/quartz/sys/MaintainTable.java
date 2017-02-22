@@ -98,11 +98,17 @@ public class MaintainTable {
 			sb.append("建立 "+list.size()+"個教職員帳號<br>");
 			sb.append("刪除 "+df.sqlGetInt("SELECT COUNT(*) FROM wwpass WHERE priority='A' AND username NOT IN(SELECT idno FROM empl)")+"個教職員帳號");
 			df.exSql("DELETE FROM wwpass WHERE priority='A' AND username NOT IN(SELECT idno FROM empl)");
-			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('帳號維護','"+sb.toString()+"');");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('帳號維護','"+sb.toString()+"');");			
+			
 		}catch(Exception e){
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('帳號維護','失敗');");
 		}
-		
+		try{
+			df.exSql("INSERT INTO CardNo(uid,cid)SELECT username, inco FROM wwpass ON DUPLICATE KEY UPDATE cid=inco");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('悠遊卡內碼備份','完成');");
+		}catch(Exception e){
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('悠遊卡內碼備份','失敗');");
+		}		
 		
 		//Seld維護
 		sb=new StringBuilder(df.sqlGetStr("SELECT COUNT(*) FROM Seld WHERE student_no NOT IN(SELECT student_no FROM stmd)"));

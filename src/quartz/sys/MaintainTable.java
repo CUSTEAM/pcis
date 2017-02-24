@@ -27,9 +27,9 @@ public class MaintainTable {
 		
 		BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");		
 		StringBuilder sb=new StringBuilder();
-		int cnt;
+		//int cnt;
 		List<Map>list;
-		String school_year=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_year'");
+		//String school_year=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_year'");
 		String school_term=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_term'");		
 		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		Date school_term_begin;
@@ -104,8 +104,11 @@ public class MaintainTable {
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('帳號維護','失敗');");
 		}
 		try{
-			df.exSql("INSERT INTO CardNo(uid,cid)SELECT username, inco FROM wwpass ON DUPLICATE KEY UPDATE cid=inco");
-			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('悠遊卡內碼備份','完成');");
+			df.exSql("INSERT INTO CardNo(uid,cid)SELECT username, inco FROM wwpass ON DUPLICATE KEY UPDATE uid=username");
+			list=df.sqlGet("SELECT COUNT(*) as c, c.* FROM CardNo c GROUP BY uid HAVING c>1");
+			
+			df.exSql("DELETE FROM CardNo WHERE cid IS NULL");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('悠遊卡內碼備份','完成, 並清除"+list.size()+"筆無卡號記錄');");
 		}catch(Exception e){
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('悠遊卡內碼備份','失敗');");
 		}		

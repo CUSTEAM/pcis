@@ -1,13 +1,7 @@
 package quartz.seld;
 
-import io.FtpClient;
-import io.GenFile;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,28 +9,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
+import io.FtpClient;
+import io.GenFile;
 import model.Seld;
+import quartz.BaseJob;
 
-import org.springframework.context.ApplicationContext;
-
-import service.impl.base.BaseAccessImpl;
-
-
-public class SeldBackup {
-	
-	ApplicationContext springContext;
-	
-	public SeldBackup(ApplicationContext springContext){
-		this.springContext=springContext;
-	}	
+/**
+ * 選課備份
+ * 停用
+ * @author John
+ *
+ */
+public class SeldBackup extends BaseJob{
 	
 	public void doit(){		
-		System.out.println("working...");
+		//System.out.println("working...");
 		String base = "/home/tmp/SeldBackup/";//本機暫存絕對路徑
 		String baseWin="C:/home/SeldBackup/";
 		//String base = "backup/";//本機暫存路徑
@@ -45,7 +33,7 @@ public class SeldBackup {
 		
 		Date date = new Date();
 		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmss");
-		BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");
+		//BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");
 				
 		//遠端備份檔案位置
 		//List<Map<String,String>>ftps=dao.QueryForList("SELECT * FROM SYS_BACKUP_HOST WHERE type='FTP'");

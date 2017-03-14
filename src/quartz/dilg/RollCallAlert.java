@@ -9,29 +9,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.ApplicationContext;
-
+import model.Mail;
+import model.MailReceiver;
 import quartz.BaseJob;
-import service.impl.StudAffairManager;
-import service.impl.base.BaseIOImpl;
-import service.impl.base.BaseLiteralImpl;
 
 /**
  * 未點名通知
  * @author John
  *
  */
-public class RollCallAlert extends BaseJob{
-	
-	ApplicationContext springContext;
-	
-	public RollCallAlert(ApplicationContext springContext){
-		this.springContext=springContext;
-	}	
+public class RollCallAlert extends BaseJob{	
 	
 	public void doit(){	
-		StudAffairManager sam= (StudAffairManager) springContext.getBean("StudAffairManager");	
-		
+		//StudAffairManager sam= (StudAffairManager) getSpringContext().getBean("StudAffairManager");	
 		Calendar c=Calendar.getInstance();
 		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");	
 		
@@ -49,17 +39,16 @@ public class RollCallAlert extends BaseJob{
 		}
 		
 		String school_term=sam.school_term();
-		BaseLiteralImpl si= (BaseLiteralImpl) springContext.getBean("BaseLiteralImpl");
-		BaseIOImpl im = (BaseIOImpl) springContext.getBean("BaseIOImpl");
+		//BaseLiteralImpl si= (BaseLiteralImpl) getSpringContext().getBean("BaseLiteralImpl");
+		//BaseIOImpl im = (BaseIOImpl) getSpringContext().getBean("BaseIOImpl");
     	
 		List<Map>empl=sam.getDataFinder().sqlGet("SELECT cl.ClassName, c.chi_name, d.techid, e.cname, " +
     	"e.Email FROM Class cl, Dtime d, empl e, Csno c WHERE cl.ClassNo=d.depart_class AND " +
     	"c.cscode=d.cscode AND d.techid=e.idno AND d.Sterm='"+school_term+"' GROUP BY d.techid");
 		
 		List dilguneed=sam.dilguneed(RollCall_begin, RollCall_end);//不點名
-    	
-    	List tmp;    	
-    	List myCs=null;
+		List<Map>tmp;    	
+    	List<Map>myCs=null;
     	String Email;    	
     	
 		StringBuilder sb;
@@ -78,7 +67,7 @@ public class RollCallAlert extends BaseJob{
 	            	"d.Sterm='"+school_term+"' AND d.techid='"+empl.get(i).get("techid")+"' ORDER BY dc.begin");
 	        		
 	        		try {
-	        			myCs=getCallInfo(tmp, dilguneed, 4, begin, end);				
+	        			myCs=getCallInfo(tmp, dilguneed, 3, begin, end);				
 	    			} catch (ParseException e) {
 	    				e.printStackTrace();
 	    			}  
@@ -89,7 +78,7 @@ public class RollCallAlert extends BaseJob{
 	        			Email=empl.get(i).get("Email").toString();	        			
 	        			//Email="hsiao@cc.cust.edu.tw";
 	        			
-	        			if(!si.validateEmail(Email)||Email.trim().equals("")||Email.trim().length()<10){
+	        			if(!bl.validateEmail(Email)||Email.trim().equals("")||Email.trim().length()<10){
 	        				f.append(empl.get(i).get("cname")+",");
 	        				continue;
 	        			}        			
@@ -98,12 +87,30 @@ public class RollCallAlert extends BaseJob{
 	        			sb.append("<p>目前尚未編輯缺曠的課程如下:</p>");        			
 	        			
 	        			for(int j=0; j<myCs.size(); j++){
-		        			sb.append( ((Map)myCs.get(j)).get("date")+"星期"+((Map)myCs.get(j)).get("week")+", 第"+
-		        			((Map)myCs.get(j)).get("begin")+"節至"+((Map)myCs.get(j)).get("end")+"節, "+((Map)myCs.get(j)).get("ClassName")+" - "+
-		        			((Map)myCs.get(j)).get("chi_name")+"<br>");
-	        			} 
+		        			sb.append(myCs.get(j).get("date")+"星期"+myCs.get(j).get("week")+", 第"+
+		        			myCs.get(j).get("begin")+"節至"+myCs.get(j).get("end")+"節, "+myCs.get(j).get("ClassName")+" - "+
+		        			myCs.get(j).get("chi_name")+"<br>");
+	        			} 	        			
 	        			
-	        			this.sendMail(Email, "點名記錄異常通知", sb.toString());	        			     			
+	        			Mail m=new Mail();					
+	    				m.setContent(sb.toString());
+	    				m.setFrom_addr("CIS@cc.cust.edu.tw");
+	    				m.setSender("中華科技大學資訊系統");
+	    				m.setSubject("未點名通知");
+	    				if(!isDebug){
+	    					m.setSend("0");
+	    				}else{
+	    					m.setSend("1");
+	    				}
+	    				df.update(m);
+	    				
+	    				MailReceiver r=new MailReceiver();
+	    				r.setMail_oid(m.getOid());
+	    				r.setAddr(empl.get(i).get("Email").toString());
+	    				r.setName(empl.get(i).get("cname").toString());
+	    				r.setType("to");									
+	    				df.update(r);
+	    				
 	        			a.append(empl.get(i).get("cname")+",");
 	        		}
 	    		}catch(Exception e){
@@ -112,10 +119,10 @@ public class RollCallAlert extends BaseJob{
 	    			continue;
 	    		}
 	    	}
-	    	sam.getDataFinder().exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教師點名通知','寄送完成:"+a+"<br>寄送失敗:"+f+"');");
+	    	sam.getDataFinder().exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教師未點名通知','寄給:"+a+"共"+empl.size()+"位老師');");
 			
 		}else{
-			sam.getDataFinder().exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教師點名通知','非點名期間');");
+			sam.getDataFinder().exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教師未點名通知','非點名期間');");
 		}
 	}
 	
@@ -126,14 +133,14 @@ public class RollCallAlert extends BaseJob{
 	 * @return
 	 * @throws ParseException
 	 */
-	private List getCallInfo(List list, List dilguneed, int day, Date begin, Date end) throws ParseException{
+	private List getCallInfo(List<Map>list, List dilguneed, int day, Date begin, Date end) throws ParseException{
 		
-		StudAffairManager sam= (StudAffairManager) springContext.getBean("StudAffairManager");
+		//StudAffairManager sam= (StudAffairManager) getSpringContext().getBean("StudAffairManager");
 		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");	
 		
 		Date today=new Date();
 		Calendar c=Calendar.getInstance();
-    	c.add(Calendar.DAY_OF_YEAR, -5);
+    	c.add(Calendar.DAY_OF_YEAR, day-(day*2));//開始上課後的日期區間才做寄送
 		Map map;
 		int week;
 		
@@ -166,9 +173,9 @@ public class RollCallAlert extends BaseJob{
 					continue;
 				}
 				
-				if((int)((Map)list.get(j)).get("week")==week){
+				if((int)list.get(j).get("week")==week){
 					map=new HashMap();
-					map.putAll((Map)list.get(j));					
+					map.putAll(list.get(j));					
 					DilgLog_date=sf.format(c.getTime());
 					Dtime_oid=map.get("dOid").toString();					
 					
@@ -195,7 +202,7 @@ public class RollCallAlert extends BaseJob{
 			c.add(Calendar.DAY_OF_YEAR, -1);
 		}
 		
-		
+		//springContext.registerShutdownHook();
 		return myCs;
 	}
 	

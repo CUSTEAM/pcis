@@ -7,30 +7,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.ApplicationContext;
-import service.impl.base.BaseAccessImpl;
-import service.impl.base.BaseLiteralImpl;
+import quartz.BaseJob;
 
 /**
  * 資料表關連維護
  * @author John
  *
  */
-public class MaintainTable {
-	
-	ApplicationContext springContext;
-	
-	public MaintainTable(ApplicationContext springContext){
-		this.springContext=springContext;
-	}	
+public class MaintainTable extends BaseJob{
+		
 	public void doit(){	
 		
-		BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");		
+		//BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");		
 		StringBuilder sb=new StringBuilder();
 		//int cnt;
 		List<Map>list;
 		//String school_year=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_year'");
-		String school_term=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_term'");		
+		//String school_term=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_term'");		
+		String school_term=df.sqlGetStr("SELECT Value FROM Parameter WHERE Name='School_term'");
 		SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		Date school_term_begin;
 		try {
@@ -40,12 +34,10 @@ public class MaintainTable {
 		}
 		//Date school_term_end=sf.parse(df.sqlGetStr("SELECT cdate FROM SYS_CALENDAR WHERE Name='school_term_end'"));		
 		Calendar stb=Calendar.getInstance();
-		stb.setTime(school_term_begin);
-		
-		
+		stb.setTime(school_term_begin);		
 
 		//BATCH_DILG_CLASS
-		try{//統計目前學生
+		//try{//統計目前學生
 			//df.exSql("DELETE FROM ");
 			df.exSql("UPDATE Class SET stds=(SELECT COUNT(*)FROM stmd WHERE depart_class=Class.ClassNo)");
 			stb=Calendar.getInstance(); 
@@ -55,25 +47,30 @@ public class MaintainTable {
 			//統計每週人數與缺曠
 			List<Map>cls=df.sqlGet("SELECT ClassNo FROM Class WHERE stds>0");			
 			for(int i=0; i<cls.size(); i++){
-				stb.setTime(sf.parse(sf.format(school_term_begin)));		
-				stb1.setTime(sf.parse(sf.format(school_term_begin)));
-				stb1.add(Calendar.DAY_OF_YEAR, 7);
-				for(int j=1; j<=18; j++){
-					df.exSql("DELETE FROM BATCH_DILG_CLASS WHERE week="+j+" AND ClassNo='"+cls.get(i).get("ClassNo")+"'");
-					df.exSql("INSERT INTO BATCH_DILG_CLASS(ClassNo,week,stds,dilgs)SELECT ClassNo, "+j+", stds,"
-					+ "(SELECT COUNT(*)FROM Dilg WHERE abs<5 AND date>='"+sf.format(stb.getTime())+"'AND date<'"+sf.format(stb1.getTime())+"'AND "
-					+ "student_no IN(SELECT student_no FROM stmd WHERE depart_class=Class.ClassNo))"
-					+ "FROM Class WHERE ClassNo='"+cls.get(i).get("ClassNo")+"'");								
-					stb.add(Calendar.DAY_OF_YEAR, 7);
+				
+				try{
+					stb.setTime(sf.parse(sf.format(school_term_begin)));		
+					stb1.setTime(sf.parse(sf.format(school_term_begin)));
 					stb1.add(Calendar.DAY_OF_YEAR, 7);
+					for(int j=1; j<=18; j++){
+						df.exSql("DELETE FROM BATCH_DILG_CLASS WHERE week="+j+" AND ClassNo='"+cls.get(i).get("ClassNo")+"'");
+						df.exSql("INSERT INTO BATCH_DILG_CLASS(ClassNo,week,stds,dilgs)SELECT ClassNo, "+j+", stds,"
+						+ "(SELECT COUNT(*)FROM Dilg WHERE abs<5 AND date>='"+sf.format(stb.getTime())+"'AND date<'"+sf.format(stb1.getTime())+"'AND "
+						+ "student_no IN(SELECT student_no FROM stmd WHERE depart_class=Class.ClassNo))"
+						+ "FROM Class WHERE ClassNo='"+cls.get(i).get("ClassNo")+"'");								
+						stb.add(Calendar.DAY_OF_YEAR, 7);
+						stb1.add(Calendar.DAY_OF_YEAR, 7);
+					}
+				}catch(Exception e){
+					continue;
 				}				
 			}			
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('BATCH_DILG_CLASS表Class表人數維護','完成');");
-			System.out.println("BATCH_DILG_CLASS完成");
-		}catch(Exception e){
-			e.printStackTrace();
-			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('BATCH_DILG_CLASS表Class表人數維護','失敗');");
-		}
+			//System.out.println("BATCH_DILG_CLASS完成");
+		//}catch(Exception e){
+			//e.printStackTrace();
+			//df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('BATCH_DILG_CLASS表Class表人數維護','失敗');");
+		//}
 		
 		
 		//wwpass維護
@@ -87,7 +84,7 @@ public class MaintainTable {
 			sb.append("刪除 "+df.sqlGetInt("SELECT COUNT(*) FROM wwpass WHERE priority='C' AND username NOT IN(SELECT student_no FROM stmd)")+"個學生帳號<br>");
 			df.exSql("DELETE FROM wwpass WHERE priority='C' AND username NOT IN(SELECT student_no FROM stmd)");
 			//教職員
-			BaseLiteralImpl bl = (BaseLiteralImpl)springContext.getBean("BaseLiteralImpl");
+			//BaseLiteralImpl bl = (BaseLiteralImpl)springContext.getBean("BaseLiteralImpl");
 			list=df.sqlGet("SELECT idno, bdate FROM empl WHERE idno NOT IN(SELECT username FROM wwpass)");
 			for(int i=0; i<list.size(); i++){
 				df.exSql("INSERT INTO wwpass(username, password, priority)VALUES('"+

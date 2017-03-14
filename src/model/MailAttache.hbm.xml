@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="model.MailAttache" table="Mail_attache" catalog="CIS">
+        <id name="Oid" type="java.lang.Integer">
+            <column name="Oid" />
+            <generator class="identity" />
+        </id>          
+        
+        <property name="file_name" type="java.lang.String">
+            <column name="file_name" />
+        </property>
+        
+        <property name="path" type="java.lang.String">
+            <column name="path" />
+        </property>
+        
+        <property name="mail_oid" type="java.lang.Integer">
+            <column name="mail_oid" />
+        </property>
+        
+        <property name="size" type="java.lang.Integer">
+            <column name="size" />
+        </property>
+    </class>
+</hibernate-mapping>

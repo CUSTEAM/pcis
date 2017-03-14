@@ -3,16 +3,12 @@ package quartz;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-
-import quartz.score.StavgRerank;
-import quartz.score.StavgRerank;
-import quartz.sys.MaintainTable;
-import quartz.dilg.RollCallAlert;
 import quartz.dilg.LeaveAlert;
 //import quartz.teacher.TutorTimeOffAlert;
+import quartz.dilg.RollCallAlert;
+import quartz.score.StavgRerank;
+import quartz.sys.MaintainTable;
 
 
 /**
@@ -24,25 +20,33 @@ public class TaskDaily implements Job {
 	
 	public void execute(JobExecutionContext context)throws JobExecutionException {		
 		
-		ApplicationContext springContext=new ClassPathXmlApplicationContext("classpath:../applicationContext.xml");		
+		System.out.println("每日排程工作");
+		
+		/*Mail m=(Mail)df.hqlGetListBy("FROM Mail").get(0);
+		m.setSender("gIS");
+		System.out.println("變更");
+		df.update(m);
+		
+		System.out.println(m.getSender());*/
 		
 		//Stavg計算並重新排名
-		StavgRerank sr=new StavgRerank(springContext);
+		StavgRerank sr=new StavgRerank();
 		sr.doit();
 		
 		//資料表維護
 		System.out.println("資料表維護");
-		MaintainTable mt=new MaintainTable(springContext);
+		MaintainTable mt=new MaintainTable();
 		mt.doit();
 		
 		//未點名通知
 		System.out.println("未點名通知");
-		RollCallAlert rca=new RollCallAlert(springContext);
+		RollCallAlert rca=new RollCallAlert();
 		rca.doit();
 		
 		//未核假通知
 		System.out.println("未核假通知");
-		LeaveAlert la=new LeaveAlert(springContext);
+		LeaveAlert la=new LeaveAlert();
 		la.doit();
+		
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="model.Mail" table="Mail_main" catalog="CIS">
+        <id name="Oid" type="java.lang.Integer">
+            <column name="Oid" />
+            <generator class="identity" />
+        </id> 
+        
+        <property name="from_addr" type="java.lang.String">
+            <column name="from_addr" />
+        </property>
+        
+        <property name="sender" type="java.lang.String">
+            <column name="sender" />
+        </property>
+        
+        <property name="subject" type="java.lang.String">
+            <column name="subject" />
+        </property>
+        
+        <property name="content" type="java.lang.String">
+            <column name="content" />
+        </property>
+        
+        <property name="send" type="java.lang.String">
+            <column name="send" not-null="false" default="0"/>
+        </property>
+        
+        <property name="error_message" type="java.lang.String">
+            <column name="error_message" />
+        </property>        
+        
+    </class>
+</hibernate-mapping>

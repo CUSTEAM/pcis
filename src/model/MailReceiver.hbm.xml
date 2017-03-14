@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="model.MailReceiver" table="Mail_receiver" catalog="CIS">
+        <id name="Oid" type="java.lang.Integer">
+            <column name="Oid" />
+            <generator class="identity" />
+        </id>          
+        
+        <property name="type" type="java.lang.String">
+            <column name="type" />
+        </property>
+        
+        <property name="addr" type="java.lang.String">
+            <column name="addr" />
+        </property>
+        
+        <property name="name" type="java.lang.String">
+            <column name="name" />
+        </property>
+        
+        <property name="mail_oid" type="java.lang.Integer">
+            <column name="mail_oid" />
+        </property>
+        
+        
+    </class>
+</hibernate-mapping>

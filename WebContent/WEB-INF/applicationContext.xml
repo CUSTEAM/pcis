@@ -21,63 +21,72 @@
             <props>
                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                <prop key="hibernate.show_sql">false</prop>
+			   <!-- 照理說排程工作不需使用二階快取
 			   <prop key="hibernate.cache.provider_class">com.opensymphony.oscache.hibernate.OSCacheProvider</prop>
-			   <prop key="hibernate.cache.use_query_cache">true</prop>
+			   <prop key="hibernate.cache.use_query_cache">true</prop-->
 	     	</props>
         </property>     
         <property name="mappingResources">
             <list>
-               <value>model/Seld.hbm.xml</value>
+            	<value>model/Mail.hbm.xml</value>
+            	<value>model/MailReceiver.hbm.xml</value>
+            	<value>model/MailAttache.hbm.xml</value>
             </list>
         </property>
     </bean>
     
     <bean id="JdbcDAO" class="dao.JdbcDAO">
-    	<description>JDBC鞈�靘�</description>
+    	<description>JDBC資料來源</description>
     	<property name="dataSource" ref="dataSource"/>
     </bean>    
     
     <bean id="HibernateDAO" class="dao.HibernateDAO">
-    	<description>hibernate鞈�靘�</description>
+    	<description>hibernate資料來源</description>
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     
     <bean id="BaseMathImpl" class="service.impl.base.BaseMathImpl">
-    	<description>�詨�閮��箸�寞�</description>
+    	<description>數字計算基本方法</description>
     </bean>
     
     <bean id="BaseLiteralImpl" class="service.impl.base.BaseLiteralImpl">
-    	<description>摮葡���箸�寞�</description>
+    	<description>字串處理基本方法</description>
     </bean>
     
     <bean id="BaseIOImpl" class="service.impl.base.BaseIOImpl">
-    	<description>銝脫����箸�寞�</description>
+    	<description>串流處理基本方法</description>
     </bean>
     
     <bean id="DataManager" class="service.impl.base.BaseAccessImpl">
-    	<description>鞈�靘��舀�箸�寞�</description>
+    	<description>資料來源匯整基本方法</description>
 		<property name="jdbcDao" ref="JdbcDAO"/>
 		<property name="hibernateDAO" ref="HibernateDAO"/>
     </bean>
     
     <bean id="DataFinder" class="service.impl.DataFinder" parent="DataManager">
-    	<description>鞈��亥岷雿��寞�</description>
-    </bean>    
+    	<description>資料查詢低階方法</description>
+    </bean>
     
     <bean id="DataUpdater" class="service.impl.DataUpdater" parent="DataManager">
-    	<description>鞈�靽格雿��寞�</description>
+    	<description>資料修改低階方法</description>
     </bean>
     
     <bean id="AccountManager" class="service.impl.AccountManager">
-    	<description>撣唾�摮�擃��寞�</description>
+    	<description>帳號存取高階方法</description>
+	    <property name="dataFinder"   ref="DataFinder"/>
+	    <property name="dataUpdater" ref="DataUpdater"/>        
+    </bean>
+    
+    <bean id="CourseManager" class="service.impl.CourseManager">
+    	<description>課程存取高階方法</description>
 	    <property name="dataFinder"   ref="DataFinder"/>
 	    <property name="dataUpdater" ref="DataUpdater"/>        
     </bean>
     
     <bean id="StudAffairManager" class="service.impl.StudAffairManager">
-    	<description>摮詨�摮�擃��寞�</description>
+    	<description>學務存取高階方法</description>
 	    <property name="dataFinder"   ref="DataFinder"/>
 	    <property name="dataUpdater" ref="DataUpdater"/>        
     </bean>
-    
+
 </beans>

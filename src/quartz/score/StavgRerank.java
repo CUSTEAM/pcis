@@ -3,28 +3,17 @@ package quartz.score;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.ApplicationContext;
-
-import service.impl.base.BaseAccessImpl;
-import service.impl.base.BaseMathImpl;
-import service.impl.StudAffairManager;
+import quartz.BaseJob;
 
 /**
  * 重新計算近4學年中Stavg中的排名、平均成績
  * @author John
  *
  */
-public class StavgRerank {
+public class StavgRerank extends BaseJob{
 	
-	ApplicationContext springContext;
-	
-	public StavgRerank(ApplicationContext springContext){
-		this.springContext=springContext;
-	}	
 	public void doit(){		
-		BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");
-		BaseMathImpl bi = (BaseMathImpl) springContext.getBean("BaseMathImpl");
-		StudAffairManager sam = (StudAffairManager) springContext.getBean("StudAffairManager");		
+			
 		int school_year=Integer.parseInt(sam.school_year());		
 		for(int i=school_year-4; i<=school_year; i++){	
 			df.exSql("DELETE FROM Stavg WHERE school_year="+i);
@@ -44,12 +33,11 @@ public class StavgRerank {
 			scores=df.sqlGet("SELECT Oid, score FROM " +
 			"Stavg s WHERE s.school_year='"+list.get(i).get("school_year")+"' AND " +
 			"s.school_term='"+list.get(i).get("school_term")+"' AND s.depart_class='"+list.get(i).get("depart_class")+"'");			
-			scores=bi.sortListByKey(scores, "score", true);			
+			scores=bm.sortListByKey(scores, "score", true);			
 			for(int j=0; j<scores.size(); j++){
 				df.exSql("UPDATE Stavg SET rank="+(j+1)+" WHERE Oid="+scores.get(j).get("Oid"));
 			}
 		}	
-		
 		
 		df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('學生排名維護','完成');");
 	}

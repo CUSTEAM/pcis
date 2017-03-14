@@ -4,38 +4,23 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import service.impl.StudAffairManager;
-import service.impl.base.BaseAccessImpl;
-import service.impl.base.BaseIOImpl;
+import quartz.BaseJob;
 
 /**
  * 資料庫狀態測試
+ * 停用
  * @author John
  *
  */
-public class TestDBJobs implements Job {
+public class TestDBJobs extends BaseJob implements Job {
 	
 	private String ip="...";
 	//private String port="3306";

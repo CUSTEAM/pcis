@@ -68,8 +68,9 @@
 	        </cron>
 	    </trigger>
 	    
+	    <!-- 未刷卡通知
 	    <job>
-	        <!-- 未刷卡通知 -->
+	        
 	        <name>AMSignWarn</name>
 	        <job-class>quartz.empl.AMSignWarn</job-class>
 	    </job>
@@ -91,7 +92,8 @@
 	            <cron-expression>0 0 15 * * ?</cron-expression>
 	        </cron>
 	    </trigger>		    	    
-	    
+	     -->
+	     
 	    <!-- 每日統一執行工作-->
 	    <job>
 	        <name>TaskDaily</name>

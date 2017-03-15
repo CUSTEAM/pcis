@@ -42,10 +42,18 @@ public class MailSender extends Thread {
 			email.setAuthentication(username, password);				
 			email.setSendPartial(true);
 			email.setCharset("UTF-8");
-			email.setSslSmtpPort(port); //SSL
+			if(port.equals("465")){
+				email.setSSLOnConnect(true);
+				email.setSslSmtpPort(port); //SSL
+			}
+			
 			email.setFrom(m.getFrom_addr(), m.getSender());				
 			email.setSubject(m.getSubject());
-			email.setMsg(m.getContent());			
+			email.setMsg(m.getContent());
+			
+			
+			//email.smtp.auth=true
+					//email.smtp.starttls.enable=true
 			
 			//收件人們
 			//r=df.hqlGetListBy("FROM MailReceiver WHERE mail_oid="+m.get(i).getOid());

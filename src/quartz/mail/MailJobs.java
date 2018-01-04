@@ -22,6 +22,7 @@ import model.Mail;
 import model.MailAttache;
 import model.MailReceiver;
 import quartz.BaseJob;
+import quartz.sys.WeatherManager;
 import service.impl.StudAffairManager;
 import service.impl.base.BaseAccessImpl;
 import service.impl.base.BaseIOImpl;
@@ -39,8 +40,6 @@ public class MailJobs extends BaseJob implements Job{
 		//BaseAccessImpl df= (BaseAccessImpl) springContext.getBean("DataManager");
 		//BaseIOImpl im = (BaseIOImpl) springContext.getBean("BaseIOImpl");
 		//StudAffairManager sam= (StudAffairManager) springContext.getBean("StudAffairManager");
-		
-		
 		//List<Mail>t=getDf().hqlGetListBy("FROM Mail WHERE send=1");
 		/*Mail m=(Mail) df.hqlGetListBy("FROM Mail WHERE Oid=1").get(0);
 		for(int i=0; i<58; i++){
@@ -56,13 +55,8 @@ public class MailJobs extends BaseJob implements Job{
 				e.printStackTrace();
 			}
 			
-		}*/
-		
-		
+		}*/		
 		Map<String, String>smtp=df.sqlGetMap("SELECT * FROM SYS_HOST WHERE useid='SysMail'");
-		
-		
-		
 		MailSender sender;
 		List<Mail>m=df.hqlGetListBy("FROM Mail WHERE send=0");
 		if(m.size()>100)m=m.subList(0, 59);
@@ -81,11 +75,10 @@ public class MailJobs extends BaseJob implements Job{
 			smtp.get("host_runtime"), smtp.get("port"),df);
 			sender.start();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		//springContext.registerShutdownHook();
+		}		
     }
 }

@@ -93,7 +93,7 @@ public class MailSender extends Thread {
 		    PrintWriter printWriter = new PrintWriter(result);
 		    e.printStackTrace(printWriter);
 		    String ex=result.toString();
-		    //System.out.println(ex);
+		    System.out.println(ex);
 		    m.setError_message(ex);
 		    m.setSend("1");
 		    df.update(m);

@@ -32,6 +32,7 @@
             	<value>model/MailReceiver.hbm.xml</value>
             	<value>model/MailAttache.hbm.xml</value>
             	<value>model/WeatherHist.hbm.xml</value>
+            	<value>model/SysOnlineStatus.hbm.xml</value>
             </list>
         </property>
     </bean>

@@ -5,6 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import quartz.dilg.Abs2Alert;
+import quartz.empl.TaskWarn;
 
 /**
  * 週排程
@@ -18,6 +19,8 @@ public class TaskWeekly implements Job {
 		System.out.println("每週排程工作");
 		Abs2Alert aa=new Abs2Alert();
 		aa.doit();		
-		//springContext.registerShutdownHook();
+		
+		TaskWarn tw=new TaskWarn();
+		tw.doit();
     }
 }

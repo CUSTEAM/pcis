@@ -25,12 +25,12 @@ public class TaskHour extends BaseJob implements Job {
 		MailReSender mailReSender=new MailReSender();	
 		mailReSender.doit(context);
 		mailReSender=null;		
-		WeatherManager weatherManager=new WeatherManager();
+		/*WeatherManager weatherManager=new WeatherManager();
 		try {
 			weatherManager.doit(context);
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
-		weatherManager=null;		
+		weatherManager=null;*/		
     }
 }

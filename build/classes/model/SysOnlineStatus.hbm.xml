@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="model.SysOnlineStatus" table="SYS_ONLINE_STATUS" catalog="CIS">
+        <id name="oid" type="java.lang.Integer">
+            <column name="Oid" />
+            <generator class="identity" />
+        </id>
+        <property name="inspection" type="java.sql.Timestamp">
+            <column name="inspection" length="19" />
+        </property>
+        <property name="onlineTeacher" type="java.lang.Short">
+            <column name="onlineTeacher" precision="4" scale="0">
+                <comment>線上教師人數</comment>
+            </column>
+        </property>
+        <property name="onlineStudent" type="java.lang.Integer">
+            <column name="onlineStudent" precision="5" scale="0">
+                <comment>學生</comment>
+            </column>
+        </property>
+        <property name="onlineOther" type="java.lang.Integer">
+            <column name="onlineOther" precision="6" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

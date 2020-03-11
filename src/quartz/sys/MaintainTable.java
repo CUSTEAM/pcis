@@ -71,6 +71,21 @@ public class MaintainTable extends BaseJob{
 			//e.printStackTrace();
 			//df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('BATCH_DILG_CLASS表Class表人數維護','失敗');");
 		//}
+		//統計課程選課人數
+		try {
+			df.exSql("UPDATE Dtime SET stu_select=(SELECT COUNT(*)FROM Seld WHERE Dtime_oid=Dtime.Oid)");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('課程人數統計','完成');");
+		}catch(Exception e) {
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('課程人數統計','失敗');");
+		}
+		
+		//一科目多教師退休
+		try {
+			df.exSql("DELETE FROM Dtime_teacher WHERE teach_id NOT IN(SELECT idno FROM empl)");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('一科目多教師離職更新','完成');");
+		}catch(Exception e) {
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('一科目多教師離職更新','失敗');");
+		}
 		
 		
 		//wwpass維護
@@ -120,9 +135,17 @@ public class MaintainTable extends BaseJob{
 		}		
 		
 		//Dilg維護
-		sb=new StringBuilder(df.sqlGetStr("SELECT COUNT(*) FROM Dilg WHERE student_no NOT IN(SELECT student_no FROM Seld WHERE Dtime_oid=Dilg.Dtime_oid)"));
+		/*sb=new StringBuilder(df.sqlGetStr("SELECT COUNT(*) FROM Dilg WHERE student_no NOT IN(SELECT student_no FROM Seld WHERE Dtime_oid=Dilg.Dtime_oid)"));
 		try{		
 			df.exSql("DELETE FROM Dilg WHERE student_no NOT IN(SELECT student_no FROM Seld WHERE Dtime_oid=Dilg.Dtime_oid)");
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退學缺課記錄','已刪除"+sb+"筆');");
+		}catch(Exception e){
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選缺課記錄','失敗');");
+		}*/
+		
+		sb=new StringBuilder(df.sqlGetStr("SELECT COUNT(*) FROM Dilg WHERE  Dtime_oid NOT IN (SELECT Dtime_oid FROM Seld WHERE Seld.student_no=Dilg.student_no)"));
+		try{		
+			df.exSql("DELETE FROM Dilg WHERE  Dtime_oid NOT IN (SELECT Dtime_oid FROM Seld WHERE Seld.student_no=Dilg.student_no)");
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選缺課記錄','已刪除"+sb+"筆');");
 		}catch(Exception e){
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('刪除退選缺課記錄','失敗');");
@@ -287,7 +310,28 @@ public class MaintainTable extends BaseJob{
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教學評量重計','失敗:"+e+"');");
 		}		
 		
-		
+		//研發資料
+		try{			
+			df.exSql("DELETE FROM Rc_aio");
+			//Rcact
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rcact',Oid, actname, school_year, idno FROM Rcact");
+			//Rcbook
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rcbook', Oid, title, school_year, idno FROM Rcbook");
+			//Rcconf
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rcconf', Oid, title, school_year, idno FROM Rcconf");
+			//Rchono
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rchono', Oid, title, school_year, idno FROM Rchono");
+			//Rcjour
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rcjour', Oid, title, school_year, idno FROM Rcjour");
+			//Rcpet
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rcpet', Oid, title, school_year, idno FROM Rcpet");
+			//Rcproj
+			df.exSql("INSERT INTO Rc_aio(Rc_table, Rc_table_oid, Rc_name, school_year, idno)SELECT 'Rcproj', Oid, projname, school_year, idno FROM Rcproj");
+			
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('研發7項資料表整合','完成');");
+		}catch(Exception e){
+			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('研發7項資料表整合','失敗:"+e+"');");
+		}
 	}
 	
 	

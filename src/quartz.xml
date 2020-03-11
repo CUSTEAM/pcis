@@ -31,21 +31,24 @@
 	            <name>TaskHourTrigger</name>	            
 	            <job-name>TaskHour</job-name>	            
 	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-	            <cron-expression>0 0 */1 * * ? </cron-expression>
-	            <!--cron-expression>0/30 * * * * ?</cron-expression-->
+	            <!-- cron-expression>0 57 11 * * ?</cron-expression-->
+	            <cron-expression>0 0/1 * * * ?</cron-expression>
 	        </cron>
 	    </trigger>
 	    
 	    <!-- 系統郵件 -->
+	    
+	    
+	    <!-- 每分鐘執行工作 -->
 	    <job>
-	        <name>MailJobs</name>
-	        <job-class>quartz.mail.MailJobs</job-class>
+	        <name>TaskMinute</name>
+	        <job-class>quartz.TaskMinute</job-class>
 	    </job>
 	    
 	    <trigger>
 	        <cron>
-	            <name>MailJobTrigger</name>	            
-	            <job-name>MailJobs</job-name>	            
+	            <name>TaskMinuteTrigger</name>	            
+	            <job-name>TaskMinute</job-name>	            
 	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
 	            <cron-expression>0 0/1 * * * ?</cron-expression>
 	            <!--cron-expression>0/1 * * * * ?</cron-expression-->
@@ -104,7 +107,7 @@
 	            <name>TaskDailyTrigger</name>	            
 	            <job-name>TaskDaily</job-name>	            
 	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-	            <cron-expression>0 0 6 * * ?</cron-expression>
+	            <cron-expression>0 30 23 * * ?</cron-expression>
 	            
 	        </cron>
 	    </trigger>
@@ -134,7 +137,7 @@
 	            <name>BackupDB</name>	            
 	            <job-name>BackupDBJobs</job-name>	            
 	            <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-	            <cron-expression>0 0 0 * * ?</cron-expression>
+	            <cron-expression>0 0 3 * * ?</cron-expression>
 	            <!--cron-expression>20 0/1 * * * ?</cron-expression-->
 	        </cron>
 	    </trigger>

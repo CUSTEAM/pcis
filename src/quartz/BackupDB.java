@@ -73,7 +73,7 @@ public class BackupDB extends BaseJob implements Job{
 		try {
 			Runtime.getRuntime().exec("chmod 777 " + path);//linux下變更權限，最終此資料夾會被刪除
 		} catch (IOException e1) {
-			//e1.printStackTrace();
+			e1.printStackTrace();
 		}
 		//System.out.println(path+"是否存在:"+f.exists());		
 		String table;//資料表名稱&檔名		
@@ -107,6 +107,7 @@ public class BackupDB extends BaseJob implements Job{
 				//dump作業 TODO 執行緒
 				if(System.getProperty("os.name").toLowerCase().indexOf("win")>-1){//windows
 					cmd=new String("mysqldump --default-character-set=utf8 -uroot -h"+dbr.get("host_debug")+" -pspring CIS "+ table + " > " + ""+path+table+ "");				
+					//System.out.println(cmd);
 					runexec(cmd);
 					//runexec("cmd /c"+cmd.replace("/", "\\"));//window系統下的轉換
 					//System.out.println(cmd);
@@ -205,7 +206,7 @@ public class BackupDB extends BaseJob implements Job{
 		    byte[] buffer = new byte[inputStream.available()];
 		    inputStream.read(buffer);
 		    String str = new String(buffer);
-		    System.out.println(str);
+		    //System.out.println(str);
 		}
 		else{
 		    InputStream errorStream = exec.getErrorStream();
@@ -213,7 +214,7 @@ public class BackupDB extends BaseJob implements Job{
 		    errorStream.read(buffer);
 
 		    String str = new String(buffer);
-		    System.out.println(str);
+		    //System.out.println(str);
 		}
 	}
 	

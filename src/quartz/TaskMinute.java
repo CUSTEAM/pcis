@@ -43,14 +43,14 @@ public class TaskMinute extends BaseJob implements Job {
     	AbstractApplicationContext springContext = new ClassPathXmlApplicationContext("classpath:../applicationContext.xml");
     	DataFinder df =(DataFinder)springContext.getBean("DataFinder");
     	springContext.registerShutdownHook();
+    	
+    	
 		//System.out.println("教師人數: onlineTeacher");
-		tea=df.sqlGetInt("SELECT COUNT(*) FROM wwpass w, empl e WHERE w.username=e.idno AND e.category='1' AND w.online>'"+lastmin+"'");
+		/*tea=df.sqlGetInt("SELECT COUNT(*) FROM wwpass w, empl e WHERE w.username=e.idno AND e.category='1' AND w.online>'"+lastmin+"'");
 		//System.out.println("學生人數: onlineStudent");
 		std=df.sqlGetInt("SELECT COUNT(*) FROM wwpass w, stmd s WHERE w.username=s.student_no AND w.online>'"+lastmin+"'");
 		//System.out.println("其他人數: onlineOther");
 		tot=df.sqlGetInt("SELECT COUNT(*) FROM wwpass w WHERE w.online>'"+lastmin+"'");
-		
-		//df.exSql("INSERT INTO SYS_ONLINE_STATUS('inspection','onlineTeacher','onlineStudent','onlineOther')VALUES('"+lastmin+"','"+tea+"','"+std+"','"+(tot-(tea+std))+"')");
 		
 		SysOnlineStatus o=new SysOnlineStatus();
 		o.setInspection(new Timestamp(c.getTimeInMillis()));
@@ -58,6 +58,7 @@ public class TaskMinute extends BaseJob implements Job {
 		o.setOnlineStudent(std);
 		o.setOnlineTeacher((short) tea);
 		df.update(o);
+		*/
 		
 		//寄件工作最低優先		
 		Map<String, String>smtp=df.sqlGetMap("SELECT * FROM SYS_HOST WHERE useid='SysMail'");

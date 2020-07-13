@@ -21,7 +21,7 @@ public class ReportJobs extends BaseJob implements Job {
 	
 	public void execute(JobExecutionContext context)throws JobExecutionException {
 		
-		List<Map>members=df.sqlGet("SELECT Email, cname FROM empl WHERE unit='102'");//取本單位
+		List<Map>members=df.sqlGet("SELECT e.Email, e.cname FROM empl e, SYS_ADMIN s WHERE e.idno=s.idno AND s.mailto='Y'");//取系統人員
 		
 		//String host=sam.getDataFinder().sqlGetStr("SELECT Value FROM Parameter p WHERE p.Category='smtp' AND p.Name='mailServer'");
 		//String username=df.sqlGetStr("SELECT Value FROM Parameter p WHERE p.Category='smtp' AND p.Name='username'");

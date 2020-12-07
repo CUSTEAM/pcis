@@ -64,7 +64,7 @@ public class TaskMinute extends BaseJob implements Job {
 		Map<String, String>smtp=df.sqlGetMap("SELECT * FROM SYS_HOST WHERE useid='SysMail'");
 		MailSender sender;
 		List<Mail>m=df.hqlGetListBy("FROM Mail WHERE send=0");
-		System.out.println("排程郵件掃瞄到"+m.size()+"封待寄郵件");
+		//System.out.println("排程郵件掃瞄到"+m.size()+"封待寄郵件");
 		if(m.size()>100)m=m.subList(0, 59);
 		List<MailReceiver>r;
 		List<MailAttache>a;

@@ -41,7 +41,8 @@ public class MailSender extends Thread {
 			email.setHostName(host);
 			email.setAuthentication(username, password);				
 			email.setSendPartial(true);
-			email.setCharset("UTF-8");
+			//email.setCharset("UTF-8");
+			email.setCharset("big5");
 			if(port.equals("465")){
 				email.setSSLOnConnect(true);
 				email.setSslSmtpPort(port); //SSL
@@ -74,7 +75,7 @@ public class MailSender extends Thread {
 			
 			//附件檔案
 			//a=df.hqlGetListBy("FROM MailAttache WHERE mail_oid="+m.get(i).getOid());
-			System.out.println(a.size());
+			//System.out.println(a.size());
 			if(a.size()>0){
 				EmailAttachment attachment;
 				for(int j=0; j<a.size(); j++){				
@@ -98,7 +99,7 @@ public class MailSender extends Thread {
 		    m.setSend("1");
 		    df.update(m);
 		}		
-	    System.out.println("已寄出");
+	    //System.out.println("已寄出");
 	}
 
 }

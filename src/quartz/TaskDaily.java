@@ -30,8 +30,8 @@ public class TaskDaily implements Job {
 		System.out.println(m.getSender());*/
 		
 		//Stavg計算並重新排名
-		StavgRerank sr=new StavgRerank();
-		sr.doit();
+		//StavgRerank sr=new StavgRerank();
+		//sr.doit();
 		
 		//資料表維護
 		System.out.println("資料表維護");

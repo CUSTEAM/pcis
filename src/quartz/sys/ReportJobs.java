@@ -35,7 +35,7 @@ public class ReportJobs extends BaseJob implements Job {
 		sb.append("點名期間:"+sam.RollCall_begin()+" - "+sam.RollCall_end()+"" +
 		"<br>--------------------------------------------------<br>");
 		
-		List<Map>rep=df.sqlGet("SELECT * FROM SYS_SCHEDULE_LOG WHERE send IS NULL");//取未寄送
+		List<Map>rep=df.sqlGet("SELECT * FROM SYS_SCHEDULE_LOG WHERE subject !='刷卡機補登報告' AND send IS NULL");//取未寄送
 		for(int i=0; i<rep.size(); i++){			
 			sb.append(rep.get(i).get("subject")+"<br>"+rep.get(i).get("note")+"<br>"+rep.get(i).get("exe_time")+
 			"<br>--------------------------------------------------<br>");

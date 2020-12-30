@@ -276,34 +276,28 @@ public class MaintainTable extends BaseJob{
 			int que, bug, abs;		
 			for(int i=0; i<c.size(); i++){
 				que=Integer.parseInt(c.get(i).get("que").toString());//計分被偵錯題
-				bug=Integer.parseInt(c.get(i).get("bug").toString());//不計分偵錯題			
-				if((que==3 && bug==3)){
+				bug=Integer.parseInt(c.get(i).get("bug").toString());//不計分偵錯題
+				//排除
+				//if(c.get(i).get("ans").toString().equals("1111111111")){
+				if(c.get(i).get("ans").toString().equals("1111111111")||c.get(i).get("ans").toString().equals("2222222222")||c.get(i).get("ans").toString().equals("3333333333")||c.get(i).get("ans").toString().equals("4444444444")||c.get(i).get("ans").toString().equals("5555555555")){
+					//無效
+					df.exSql("UPDATE Dtime SET samples=samples+1 WHERE Oid="+c.get(i).get("Dtime_oid"));
+					df.exSql("UPDATE Seld SET coansw_invalid='*'WHERE Oid="+c.get(i).get("Oid"));
+					c.get(i).put("check", false);
+					continue;
+				}				
+				abs=Math.abs(que-bug);
+				if(abs>1){
 					//有效
 					df.exSql("UPDATE Dtime SET samples=samples+1, effsamples=effsamples+1, coansw=coansw+"+sum(c.get(i).get("ans").toString())+" WHERE Oid="+c.get(i).get("Dtime_oid"));
 					c.get(i).put("check", true);
-					
-				}else{				
-					//排除
-					if(c.get(i).get("ans").toString().equals("1111111111")){
-					//if(c.get(i).get("ans").toString().equals("1111111111")||c.get(i).get("ans").toString().equals("2222222222")||c.get(i).get("ans").toString().equals("3333333333")||c.get(i).get("ans").toString().equals("4444444444")||c.get(i).get("ans").toString().equals("5555555555")){
-						//無效
-						df.exSql("UPDATE Dtime SET samples=samples+1 WHERE Oid="+c.get(i).get("Dtime_oid"));
-						df.exSql("UPDATE Seld SET coansw_invalid='*'WHERE Oid="+c.get(i).get("Oid"));
-						c.get(i).put("check", false);
-						continue;
-					}				
-					abs=Math.abs(que-bug);
-					if(abs>1){
-						//有效
-						df.exSql("UPDATE Dtime SET samples=samples+1, effsamples=effsamples+1, coansw=coansw+"+sum(c.get(i).get("ans").toString())+" WHERE Oid="+c.get(i).get("Dtime_oid"));
-						c.get(i).put("check", true);
-					}else{
-						//無效
-						df.exSql("UPDATE Dtime SET samples=samples+1 WHERE Oid="+c.get(i).get("Dtime_oid"));
-						df.exSql("UPDATE Seld SET coansw_invalid='*'WHERE Oid="+c.get(i).get("Oid"));
-						c.get(i).put("check", false);
-					}
-				}			
+				}else{
+					//無效
+					df.exSql("UPDATE Dtime SET samples=samples+1 WHERE Oid="+c.get(i).get("Dtime_oid"));
+					df.exSql("UPDATE Seld SET coansw_invalid='*'WHERE Oid="+c.get(i).get("Oid"));
+					c.get(i).put("check", false);
+				}
+				
 			}
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教學評量重計','完成');");
 		}catch(Exception e){

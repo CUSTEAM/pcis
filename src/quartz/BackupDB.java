@@ -83,7 +83,7 @@ public class BackupDB extends BaseJob implements Job{
 		//資料表作業
 		for (int i = 0; i < list.size(); i++) {	
 		//for (int i = 0; i <10; i++) {			
-			table = list.get(i).get("Tables_in_CIS").toString();// mysql自帶常數			
+			table = list.get(i).get("Tables_in_CIS").toString();// mysql自帶常數				
 			garbage = false;			
 			//排除單一資料表			
 			for (int x = 0; x < single.size(); x++) {				
@@ -101,7 +101,7 @@ public class BackupDB extends BaseJob implements Job{
 				}
 			}	
 			if (garbage)continue;//若為排除資料表立即放棄作業
-			
+			System.out.println(table+"備份中");
 			String cmd, lmd[];
 			try {
 				//dump作業 TODO 執行緒

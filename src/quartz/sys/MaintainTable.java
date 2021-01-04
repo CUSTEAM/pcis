@@ -279,7 +279,7 @@ public class MaintainTable extends BaseJob{
 				bug=Integer.parseInt(c.get(i).get("bug").toString());//不計分偵錯題
 				//排除
 				//if(c.get(i).get("ans").toString().equals("1111111111")){
-				if(c.get(i).get("ans").toString().equals("1111111111")||c.get(i).get("ans").toString().equals("2222222222")||c.get(i).get("ans").toString().equals("3333333333")||c.get(i).get("ans").toString().equals("4444444444")||c.get(i).get("ans").toString().equals("5555555555")){
+				if(c.get(i).get("ans").toString().equals("11111111111")||c.get(i).get("ans").toString().equals("22222222222")||c.get(i).get("ans").toString().equals("33333333333")||c.get(i).get("ans").toString().equals("44444444444")||c.get(i).get("ans").toString().equals("55555555555")){
 					//無效
 					df.exSql("UPDATE Dtime SET samples=samples+1 WHERE Oid="+c.get(i).get("Dtime_oid"));
 					df.exSql("UPDATE Seld SET coansw_invalid='*'WHERE Oid="+c.get(i).get("Oid"));
@@ -287,7 +287,7 @@ public class MaintainTable extends BaseJob{
 					continue;
 				}				
 				abs=Math.abs(que-bug);
-				if(abs>1){
+				if(abs>=1){
 					//有效
 					df.exSql("UPDATE Dtime SET samples=samples+1, effsamples=effsamples+1, coansw=coansw+"+sum(c.get(i).get("ans").toString())+" WHERE Oid="+c.get(i).get("Dtime_oid"));
 					c.get(i).put("check", true);
@@ -297,7 +297,6 @@ public class MaintainTable extends BaseJob{
 					df.exSql("UPDATE Seld SET coansw_invalid='*'WHERE Oid="+c.get(i).get("Oid"));
 					c.get(i).put("check", false);
 				}
-				
 			}
 			df.exSql("INSERT INTO SYS_SCHEDULE_LOG(subject,note)VALUES('教學評量重計','完成');");
 		}catch(Exception e){
